@@ -48,7 +48,7 @@ class PartiePT(Partie):
         self._histo_build[le2mtrans(u"Period\npayoff")] = "PT_periodpayoff"
         self._histo_build[le2mtrans(u"Cumulative\npayoff")] = "PT_cumulativepayoff"
         self._histo_content = [list(self._histo_build.viewkeys())]
-        self.periods = {}
+#        self.periods = {}
         self._currentperiod = None
 
     @defer.inlineCallbacks

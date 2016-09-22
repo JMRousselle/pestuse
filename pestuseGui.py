@@ -18,7 +18,8 @@ from pestuseGuiSrc import questcomp
 from pestuseGuiSrc import affichageResultats
 
 # Pour le tirage du de (de util.servguidialogs.py)
-from util.dice import dice
+#from util.dice import dice
+from util.utilwidgets import WDice
 
 # Import da matplotlib pour les graphiques
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
@@ -668,7 +669,7 @@ class GuiTirage_de(QtGui.QDialog):
         self._historique = GuiHistorique(self, historique)
 
         layout = QtGui.QVBoxLayout(self)
-        self._widdice = dice.WDice(parent=self, automatique = self._automatique)
+        self._widdice = WDice(parent=self, automatique = self._automatique)
         layout.addWidget(self._widdice)
 
         buttons = QtGui.QDialogButtonBox(
