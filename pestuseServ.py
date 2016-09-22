@@ -95,7 +95,7 @@ class Serveur(object):
             "RemotePT", pms))
         self._tous = self._le2mserv.gestionnaire_joueurs.get_players(
             'pestuse')
-        logger.debug("Tous: {}".format(self._tous))
+        logger.debug("Tous (pour voir): {}".format(self._tous))
 
         # configure part (player and remote)
         yield (self._le2mserv.gestionnaire_experience.run_step(
