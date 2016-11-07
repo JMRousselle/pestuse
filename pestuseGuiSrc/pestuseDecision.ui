@@ -117,7 +117,11 @@
           </widget>
          </item>
          <item>
-          <widget class="QSpinBox" name="spinBox_nbAteliersY"/>
+          <widget class="QSpinBox" name="spinBox_nbAteliersY">
+           <property name="maximum">
+            <number>10</number>
+           </property>
+          </widget>
          </item>
          <item>
           <spacer name="horizontalSpacer_6">
@@ -513,7 +517,7 @@
             </font>
            </property>
            <property name="styleSheet">
-            <string notr="true">color: rgb(0, 0, 255);</string>
+            <string notr="true">color: rgb(0, 128, 0);</string>
            </property>
            <property name="text">
             <string/>
@@ -536,7 +540,7 @@
             </font>
            </property>
            <property name="styleSheet">
-            <string notr="true">color: rgb(0, 128, 0);</string>
+            <string notr="true">color: rgb(0, 0, 255);</string>
            </property>
            <property name="text">
             <string/>
@@ -625,7 +629,7 @@
             </font>
            </property>
            <property name="styleSheet">
-            <string notr="true">color: rgb(0, 0, 255);</string>
+            <string notr="true">color: rgb(0, 128, 0);</string>
            </property>
            <property name="text">
             <string/>
@@ -648,7 +652,7 @@
             </font>
            </property>
            <property name="styleSheet">
-            <string notr="true">color: rgb(0, 128, 0);</string>
+            <string notr="true">color: rgb(0, 0, 255);</string>
            </property>
            <property name="text">
             <string/>
@@ -698,7 +702,7 @@
          <item>
           <widget class="QLabel" name="label_2">
            <property name="text">
-            <string>Quantité d'intrans X</string>
+            <string>Quantité d'intrant X</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
@@ -709,15 +713,18 @@
           <widget class="QScrollBar" name="horizontalScrollBar_produitY">
            <property name="minimumSize">
             <size>
-             <width>200</width>
+             <width>250</width>
              <height>0</height>
             </size>
            </property>
            <property name="maximumSize">
             <size>
-             <width>200</width>
+             <width>250</width>
              <height>16777215</height>
             </size>
+           </property>
+           <property name="maximum">
+            <number>600</number>
            </property>
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
@@ -747,7 +754,7 @@
          <item>
           <widget class="QLabel" name="label_3">
            <property name="text">
-            <string>Quantité d'intrans X</string>
+            <string>Quantité d'intrant X</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
@@ -758,15 +765,18 @@
           <widget class="QScrollBar" name="horizontalScrollBar_produitZ">
            <property name="minimumSize">
             <size>
-             <width>200</width>
+             <width>250</width>
              <height>0</height>
             </size>
            </property>
            <property name="maximumSize">
             <size>
-             <width>200</width>
+             <width>250</width>
              <height>16777215</height>
             </size>
+           </property>
+           <property name="maximum">
+            <number>600</number>
            </property>
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
@@ -1069,6 +1079,12 @@
            <column>
             <property name="text">
              <string>x</string>
+            </property>
+            <property name="font">
+             <font>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
             </property>
            </column>
            <column>

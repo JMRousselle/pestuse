@@ -124,10 +124,7 @@ class RemotePT(pb.Referenceable):
         logger.info(u"{} Tirage du dé".format(self._le2mclt.uid))
         if self._le2mclt.simulation:
             tirage_de = \
-                random.randrange(
-                    1,
-                    6
-                    )
+                random.randint(1, 6)
             logger.info(u"{} Send back {}".format(self._le2mclt.uid, tirage_de))
             return tirage_de
         else: 
@@ -163,7 +160,10 @@ class RemotePT(pb.Referenceable):
                     epsylon = 1
                 else:
                     epsylon = 0
-                complement_rendementZ = float(epsylon * 100 * decision_pour_Z** pms.BETA)
+                if decision_pour_Z == 0:
+                    complement_rendementZ = 0
+                else:
+                    complement_rendementZ = float(epsylon * 100 * decision_pour_Z** pms.BETA)
             elif type_partie == "WIN" or type_partie == "WEI" or type_partie == "WIE":
                 if tirage_du_de == 1:
                     epsylon = -1.
@@ -172,18 +172,33 @@ class RemotePT(pb.Referenceable):
                 else:
                     epsylon = 0
                 if epsylon == -1.:
-                    complement_rendementZ = float(epsylon * 100 * (decision_pour_Z** pms.BETA) -4 + 12)
+                    if decision_pour_Z == 0:
+                        complement_rendementZ = 0
+                    else:
+                        complement_rendementZ = float(epsylon * 100 * (decision_pour_Z** pms.BETA) - pms.ASSUR + pms.INDEMNITE)
                 else:
-                    complement_rendementZ = float(epsylon * 100 * (decision_pour_Z** pms.BETA) -4)            
+                    if decision_pour_Z == 0:
+                        complement_rendementZ = 0
+                    else:
+                        complement_rendementZ = float(epsylon * 100 * (decision_pour_Z** pms.BETA) - pms.ASSUR)            
             
             self.tirage_du_de = tirage_du_de
-            self.le_rendementY = round(20.0 * float(decision_pour_Y) ** .3, 2)
-            self.le_profitY = round(10 * self.le_rendementY - decision_pour_Y, 2)
-            self.le_gainY = self.le_profitY * float(nbAteliersY)
-            
-            self.le_rendementZ = round((20.0 * float(decision_pour_Z) ** .3), 2)
-            self.le_profitZ = round(10 * self.le_rendementZ - decision_pour_Z, 2)
-            self.le_gainZ = self.le_profitZ * float(nbAteliersZ)
+            if decision_pour_Y == 0:
+                self.le_rendementY = 0
+                self.le_profitY = 0
+                self.le_gainY = 0
+            else:
+                self.le_rendementY = round(20.0 * float(decision_pour_Y) ** .3, 2)
+                self.le_profitY = bonus + round(10 * self.le_rendementY - decision_pour_Y, 2) + montant_fixe
+                self.le_gainY = self.le_profitY * float(nbAteliersY)
+            if decision_pour_Z == 0:
+                self.le_rendementZ = 0
+                self.le_profitZ = 0
+                self.le_gainZ = 0
+            else:                
+                self.le_rendementZ = round((20.0 * float(decision_pour_Z) ** .3 + complement_rendementZ), 2)
+                self.le_profitZ = bonus + round(10 * self.le_rendementZ - decision_pour_Z, 2) + montant_fixe
+                self.le_gainZ = self.le_profitZ * float(nbAteliersZ)
             
             retour = []
             retour.append(self.le_rendementY)

@@ -39,8 +39,10 @@ DECISION_erreur = TITLE_MSG(
     u"Warning message")
 DECISION_confirmation = TITLE_MSG(
     u"Confirmation",
-    u"Confirmation message")
-
+    u"Confirmez-vous vos choix ?")
+HISTO_confirmation = TITLE_MSG(
+    u"Continuer",
+    u"Voulez-vous continuer ?")
 
 # ECRAN RECAPITULATIF ==========================================================
 def get_recapitulatif(currentperiod):
@@ -49,8 +51,10 @@ def get_recapitulatif(currentperiod):
 
 
 # TEXTE FINAL PARTIE ===========================================================
-def get_texte_final(gain_ecus, gain_euros):
-    txt = u"Vous avez gagné {gain_en_ecu}, soit {gain_en_euro}.".format(
+def get_texte_final(gain_ecus, gain_euros, tirage_part_pestuse_gain, tirage_periode_pestuse_gain):
+    txt = u"C'est la partie {tir_part_pestuse_gain} et la période {tir_periode_pestuse_gain} qui ont été tirées au sort. Vous avez gagné {gain_en_ecu}, soit {gain_en_euro}.".format(
+        tir_part_pestuse_gain = tirage_part_pestuse_gain, 
+        tir_periode_pestuse_gain = tirage_periode_pestuse_gain, 
         gain_en_ecu=get_pluriel(gain_ecus, u"ecu"),
         gain_en_euro=get_pluriel(gain_euros, u"euro")
     )

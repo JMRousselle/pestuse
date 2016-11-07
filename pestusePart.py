@@ -30,8 +30,8 @@ class PartiePT(Partie):
         self.joueur = joueur
         self._texte_recapitulatif = u""
         self._texte_final = u""
-        self.PT_gain_ecus = 0
-        self.PT_gain_euros = 0
+        # self.PT_gain_ecus = 0
+        #        self.PT_gain_euros = 0
         self._histo_build = OrderedDict()
         self._histo_build[le2mtrans(u"Period")] = "PT_period"
         self._histo_build[le2mtrans(u"DecisionY")] = "PT_decisionY"
@@ -48,7 +48,7 @@ class PartiePT(Partie):
         self._histo_build[le2mtrans(u"Period\npayoff")] = "PT_periodpayoff"
         self._histo_build[le2mtrans(u"Cumulative\npayoff")] = "PT_cumulativepayoff"
         self._histo_content = [list(self._histo_build.viewkeys())]
-#        self.periods = {}
+        #        self.periods = {}
         self._currentperiod = None
 
     @defer.inlineCallbacks
@@ -72,19 +72,19 @@ class PartiePT(Partie):
             QC = list(pms.QCWIE)
         QC_NbQuest = len(QC)
         reponses_fausse = []
-        for i_QC_NbQuest in range(0, QC_NbQuest):        
+        for i_QC_NbQuest in range(0, QC_NbQuest):
             logger.debug(u"{} Decision".format(self.joueur))
             debut_QC = datetime.now()
-            self.PT_decision_QC = yield(self.remote.callRemote(
+            self.PT_decision_QC = yield (self.remote.callRemote(
                 "display_QC", i_QC_NbQuest, type_partie))
             self.PT_decisiontime_QC = (datetime.now() - debut_QC).seconds
             indice_bonne_reponse = QC[i_QC_NbQuest][1].index(QC[i_QC_NbQuest][2][0])
             if self.PT_decision_QC != indice_bonne_reponse:
                 reponses_fausse.append(i_QC_NbQuest)
-#            self.joueur.info(u"{}".format(self.PT_decision_QC))
+            # self.joueur.info(u"{}".format(self.PT_decision_QC))
             self.joueur.remove_waitmode()
         self.joueur.info(u"Faute(s) {}".format(reponses_fausse))
-        
+
     @property
     def currentperiod(self):
         return self._currentperiod
@@ -121,15 +121,16 @@ class PartiePT(Partie):
         """
         logger.debug(u"{} Decision".format(self.joueur))
         debut = datetime.now()
-        les_decisions = yield(self.remote.callRemote(
-            "display_decision",  self._histo_content, type_partie))
+        les_decisions = yield (self.remote.callRemote(
+            "display_decision", self._histo_content, type_partie))
         self.currentperiod.PT_decisionY = les_decisions[0]
         self.currentperiod.PT_decisionZ = les_decisions[1]
         self.currentperiod.PT_nbAteliersY = les_decisions[2]
         self.currentperiod.PT_nbAteliersZ = 10 - les_decisions[2]
         self.currentperiod.PT_type_partie = type_partie
         self.currentperiod.PT_decisiontime = (datetime.now() - debut).seconds
-        self.joueur.info(u"{} {} {} {}".format(self.currentperiod.PT_nbAteliersY, self.currentperiod.PT_nbAteliersZ, self.currentperiod.PT_decisionY,  self.currentperiod.PT_decisionZ))
+        self.joueur.info(u"{} {} {} {}".format(self.currentperiod.PT_nbAteliersY, self.currentperiod.PT_nbAteliersZ,
+                                               self.currentperiod.PT_decisionY, self.currentperiod.PT_decisionZ))
         self.joueur.remove_waitmode()
 
     @defer.inlineCallbacks
@@ -140,14 +141,14 @@ class PartiePT(Partie):
         """
         logger.debug(u"{} tirage du dé".format(self.joueur))
         debut_de = datetime.now()
-        self.currentperiod.PT_tirage_de = yield(self.remote.callRemote(
+        self.currentperiod.PT_tirage_de = yield (self.remote.callRemote(
             "tirage_de", type_partie))
         self.currentperiod.PT_decisiontime_de = (datetime.now() - debut_de).seconds
         self.joueur.info(u"{}".format(self.currentperiod.PT_tirage_de))
         self.joueur.remove_waitmode()
 
     @defer.inlineCallbacks
-    def affichage_result(self, type_partie):
+    def affichage_result(self, type_partie, indice_part_pestuse, tirage_part_pestuse_gain, tirage_periode_pestuse_gain):
         """
         Affichage des resultat de la periode
         :return:
@@ -159,8 +160,8 @@ class PartiePT(Partie):
         tirage_du_de = self.currentperiod.PT_tirage_de
         logger.debug(u"{} Affichage des résultats de la période".format(self.joueur))
         debut_ar = datetime.now()
-        les_retours = yield(self.remote.callRemote(
-            "affichage_result", decision_pour_Y, decision_pour_Z, tirage_du_de, type_partie,  nbAtelierY, nbAtelierZ))
+        les_retours = yield (self.remote.callRemote(
+            "affichage_result", decision_pour_Y, decision_pour_Z, tirage_du_de, type_partie, nbAtelierY, nbAtelierZ))
         self.currentperiod.PT_rendementY = les_retours[0]
         self.currentperiod.PT_rendementZ = les_retours[1]
         self.currentperiod.PT_profitY = les_retours[2]
@@ -168,6 +169,24 @@ class PartiePT(Partie):
         self.currentperiod.PT_tirage_de = les_retours[4]
         self.currentperiod.PT_gainY = les_retours[5]
         self.currentperiod.PT_gainZ = les_retours[6]
+        # On met la valeur des gains si on est sur la partie pestuse tiree au sort et la bonne periode
+        self.currentperiod.PT_periodpayoff = 0
+        # print "indice_part_pestuse = ",  indice_part_pestuse
+        #        print "tirage_part_pestuse_gain = ",  tirage_part_pestuse_gain
+        #        print "\n"
+        #        print "self.currentperiod.PT_period = ", self.currentperiod.PT_period
+        #        print "tirage_periode_pestuse_gain",  tirage_periode_pestuse_gain
+        if indice_part_pestuse == tirage_part_pestuse_gain and self.currentperiod.PT_period == tirage_periode_pestuse_gain:
+            self.currentperiod.PT_periodpayoff = les_retours[5] + les_retours[6]
+            self.PT_gain_ecus = les_retours[5] + les_retours[6]
+            self.PT_gain_euros = \
+                float(self.PT_gain_ecus) * float(pms.TAUX_CONVERSION)
+        #            print "JE PASSE et self.currentperiod.PT_periodpayoff = ", self.currentperiod.PT_periodpayoff
+        #            print " Et self.PT_gain_ecus = ",  self.PT_gain_ecus
+        resu_payoff = self.currentperiod.PT_periodpayoff
+        self.currentperiod.PT_indice_part_pestuse = indice_part_pestuse
+        self.currentperiod.PT_tirage_part_pestuse_gain = tirage_part_pestuse_gain
+        self.currentperiod.PT_tirage_periode_pestuse_gain = tirage_periode_pestuse_gain
         # On remplit l historique
         self._histo_content.append(
             [getattr(self.currentperiod, e) for e
@@ -176,19 +195,21 @@ class PartiePT(Partie):
         self.joueur.info(u"{}".format(self.currentperiod.PT_tirage_ar))
         self.joueur.remove_waitmode()
 
+        yield resu_payoff
+
     def compute_periodpayoff(self):
         """
         Compute the payoff for the period
         :return:
         """
         logger.debug(u"{} Period Payoff".format(self.joueur))
-        self.currentperiod.PT_periodpayoff = 0
+        # self.currentperiod.PT_periodpayoff = 0
 
         # cumulative payoff since the first period
         if self.currentperiod.PT_period < 2:
             self.currentperiod.PT_cumulativepayoff = \
                 self.currentperiod.PT_periodpayoff
-        else: 
+        else:
             previousperiod = self.periods[self.currentperiod.PT_period - 1]
             self.currentperiod.PT_cumulativepayoff = \
                 previousperiod.PT_cumulativepayoff + \
@@ -214,12 +235,12 @@ class PartiePT(Partie):
         self._histo_content.append(
             [getattr(self.currentperiod, e) for e
              in self._histo_build.viewvalues()])
-        yield(self.remote.callRemote(
+        yield (self.remote.callRemote(
             "display_summary", self._texte_recapitulatif, self._histo_content))
         self.joueur.info("Ok")
         self.joueur.remove_waitmode()
-    
-    def compute_partpayoff(self):
+
+    def compute_partpayoff(self, tirage_part_pestuse_gain, tirage_periode_pestuse_gain):
         """
         Compute the payoff of the part
         :return:
@@ -233,7 +254,10 @@ class PartiePT(Partie):
         # texte final
         self._texte_final = texts.get_texte_final(
             self.PT_gain_ecus,
-            self.PT_gain_euros)
+            self.PT_gain_euros,
+            tirage_part_pestuse_gain,
+            tirage_periode_pestuse_gain
+        )
 
         logger.debug(u"{} Final text {}".format(self.joueur, self._texte_final))
         logger.info(u'{} Payoff ecus {} Payoff euros {:.2f}'.format(
@@ -269,13 +293,17 @@ class RepetitionsPT(Base):
     PT_decisiontime_ar = Column(Integer)
     PT_periodpayoff = Column(Float)
     PT_cumulativepayoff = Column(Float)
+    PT_indice_part_pestuse = Column(Integer)
+    PT_tirage_part_pestuse_gain = Column(Integer)
+    PT_tirage_periode_pestuse_gain = Column(Integer)
 
     def __init__(self, period):
         self.PT_treatment = pms.TREATMENT
         self.PT_period = period
         self.PT_decisiontime = 0
         self.PT_periodpayoff = 0
-        self.PT_cumulativepayoff = 0
+
+    # self.PT_cumulativepayoff = 0
 
     def todict(self, joueur):
         temp = {c.name: getattr(self, c.name) for c in self.__table__.columns}
