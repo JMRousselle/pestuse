@@ -33,10 +33,10 @@ PRIX_PRODUIT_X = 1
 
 BONUS = 1500
 MONTANT_FIXE = 300
-ASSUR = 12
+ASSUR = 8
 INDEMNITE = 48
 
-BETA = -0.1
+BETA = 0.1
 
 
 # TEXTE DU QUESTIONNAIRE DE COMPREHENSION Question, Choix, Bonnes reponse puis texte de réponse

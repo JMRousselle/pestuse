@@ -787,6 +787,7 @@ class GuiTirage_de(QtGui.QDialog):
         layout = QtGui.QVBoxLayout(self)
         self._widdice = WDice(parent=self, automatique = self._automatique)
         layout.addWidget(self._widdice)
+#        self._widdice.ui.closeEvent = self._accept
 
 #        buttons = QtGui.QDialogButtonBox(
 #            QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
@@ -818,66 +819,291 @@ class GuiTirage_de(QtGui.QDialog):
 
     def get_dicevalue(self):
         return self._widdice.get_dicevalue()
+        
+#----------------- AVEC AFFICHAGE RESULTATS -----------------        
 
-class GuiAffichage_result(QtGui.QDialog):
+#class GuiAffichage_result(QtGui.QDialog):
+#    def __init__(self, defered, automatique, parent, periode, historique, decision_pour_Y, decision_pour_Z, tirage_du_de, type_partie, nbAteliersY, nbAteliersZ):
+#        super(GuiAffichage_result, self).__init__(parent)
+#
+#        # variables
+#        self._defered = defered
+#        self._automatique = automatique
+#        self._historique = GuiHistorique(self, historique)
+#        self.tirage_du_de = tirage_du_de
+#        
+#        # gui
+#        self.ui = affichageResultats.Ui_Dialog()
+#        self.ui.setupUi(self)
+#
+#        # period and history
+#        if periode:
+#            self.ui.label_periode.setText(textes_main.PERIODE_label(periode))
+#            self.ui.pushButton_historique.setText(
+#                le2mtrans(u"History"))
+#            self.ui.pushButton_historique.clicked.connect(
+#                self._historique.show)
+#        else:
+#            self.ui.label_periode.setVisible(False)
+#            self.ui.pushButton_historique.setVisible(False)
+#
+#        # On cache le bouton historique
+#        self.ui.pushButton_historique.setVisible(False)
+#        
+#        #On retaille la hauteur des ligne des tableaux historiques
+#        for x in range(10):
+#            self.ui.tableWidget_histo_produitY.setRowHeight(x, 19)
+#            self.ui.tableWidget_histo_produitZ.setRowHeight(x, 19)
+#        #On peut retailler la largeur des colonnes des tableaux historique
+#        self.ui.tableWidget_histo_produitY.setColumnWidth(0, 40)
+#        self.ui.tableWidget_histo_produitZ.setColumnWidth(0, 40)
+#        self.ui.tableWidget_histo_produitZ.setColumnWidth(2, 25)
+#        
+#        # bouton box
+#        self.ui.buttonBox.accepted.connect(self._accept)
+#        self.ui.buttonBox.rejected.connect(self.reject)
+#        self.ui.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setVisible(
+#            False)
+#
+#        # title and size
+#        self.setWindowTitle(texts.DECISION_titre)
+##        self.setFixedSize(1032, 768)
+#
+#        # On rempli les lignes Y et Z du tableau resultat
+#        tab_decision_pour_Y = QtGui.QTableWidgetItem('%s' %(str(decision_pour_Y)))
+#        tab_decision_pour_Z = QtGui.QTableWidgetItem('%s' %(str(decision_pour_Z)))
+#        tab_tirage_du_de = QtGui.QTableWidgetItem('%s' %(str(self.tirage_du_de)))
+#        self.ui.tableWidget_histo_produitY.setItem(0,  0,  tab_decision_pour_Y)
+#        self.ui.tableWidget_histo_produitZ.setItem(0,  0,  tab_decision_pour_Z)
+#        self.ui.tableWidget_histo_produitZ.setItem(0,  2,  tab_tirage_du_de)
+#        # Suite du remplissage tableau pour le benchmark
+#        tab_nbateliersY = QtGui.QTableWidgetItem('%s' %(str(nbAteliersY)))
+#        self.ui.tableWidget_histo_produitY.setItem(0,  1,  tab_nbateliersY)
+#        tab_nbateliersZ = QtGui.QTableWidgetItem('%s' %(str(nbAteliersZ)))
+#        self.ui.tableWidget_histo_produitZ.setItem(0,  1,  tab_nbateliersZ)
+#
+#        if type_partie == "BEN":
+#            bonus = pms.BONUS
+#            montant_fixe = 0
+#        else:
+#            bonus = pms.BONUS
+#            montant_fixe = pms.MONTANT_FIXE
+#            
+#        if type_partie == "BEN":
+#            complement_rendementZ = 0
+#        elif type_partie == "WEA" or type_partie == "WEX":
+#            if tirage_du_de == 1:
+#                epsylon = -1.
+#            elif tirage_du_de == 6:
+#                epsylon = 1
+#            else:
+#                epsylon = 0
+#            if decision_pour_Z == 0:
+#                complement_rendementZ = 0
+#            else:
+#                complement_rendementZ = float(epsylon * 100 * decision_pour_Z** pms.BETA)
+#        elif type_partie == "WIN" or type_partie == "WEI" or type_partie == "WIE":
+#            if tirage_du_de == 1:
+#                epsylon = -1.
+#            elif tirage_du_de == 6:
+#                epsylon = 1
+#            else:
+#                epsylon = 0
+#            if epsylon == -1.:
+#                if decision_pour_Z == 0:
+#                    complement_rendementZ = 0
+#                else:
+#                    complement_rendementZ = float(epsylon * 100 * (decision_pour_Z** pms.BETA) - pms.ASSUR + pms.INDEMNITE)
+#            else:
+#                if decision_pour_Z == 0:
+#                    complement_rendementZ = 0
+#                else:
+#                    complement_rendementZ = float(epsylon * 100 * (decision_pour_Z** pms.BETA) - pms.ASSUR)
+#
+#        self.le_rendementY = round(20.0 * float(decision_pour_Y) ** .3, 2)
+#        tab_le_rendementY = QtGui.QTableWidgetItem('%s' %(str(self.le_rendementY)))
+#        self.ui.tableWidget_histo_produitY.setItem(0,  2,  tab_le_rendementY)
+#        self.le_profitY = round((pms.PRIX_PRODUIT_Y * self.le_rendementY) - (decision_pour_Y * pms.PRIX_PRODUIT_X) + bonus + montant_fixe, 2)
+#        tab_le_profitY = QtGui.QTableWidgetItem('%s' %(str(self.le_profitY)))
+#        self.ui.tableWidget_histo_produitY.setItem(0,  3,  tab_le_profitY)
+#        self.le_gainY = self.le_profitY * float(nbAteliersY)
+#        tab_le_gainY = QtGui.QTableWidgetItem('%s' %(str(self.le_gainY)))
+#        self.ui.tableWidget_histo_produitY.setItem(0,  4,  tab_le_gainY)
+#        
+#        self.le_rendementZ = round((20.0 * float(decision_pour_Z) ** .3 + complement_rendementZ), 2)
+#        tab_le_rendementZ = QtGui.QTableWidgetItem('%s' %(str(self.le_rendementZ)))
+#        self.ui.tableWidget_histo_produitZ.setItem(0,  3,  tab_le_rendementZ)
+#        self.le_profitZ = round((pms.PRIX_PRODUIT_Z * self.le_rendementZ) - (decision_pour_Z * pms.PRIX_PRODUIT_X) + bonus + montant_fixe, 2)
+#        tab_le_profitZ = QtGui.QTableWidgetItem('%s' %(str(self.le_profitZ)))
+#        self.ui.tableWidget_histo_produitZ.setItem(0,  4,  tab_le_profitZ)
+#        self.le_gainZ = self.le_profitZ * float(nbAteliersZ)
+#        tab_le_gainZ = QtGui.QTableWidgetItem('%s' %(str(self.le_gainZ)))
+#        self.ui.tableWidget_histo_produitZ.setItem(0,  5,  tab_le_gainZ)        
+#        
+#        # automatic
+#        if self._automatique:
+#            # On rempli les lignes Y et Z du tableau resultat
+#            tab_decision_pour_Y = QtGui.QTableWidgetItem('%s' %(str(decision_pour_Y)))
+#            tab_decision_pour_Z = QtGui.QTableWidgetItem('%s' %(str(decision_pour_Z)))
+#            tab_tirage_du_de = QtGui.QTableWidgetItem('%s' %(str(self.tirage_du_de)))
+#            self.ui.tableWidget_histo_produitY.setItem(0,  0,  tab_decision_pour_Y)
+#            self.ui.tableWidget_histo_produitZ.setItem(0,  0,  tab_decision_pour_Z)
+#            self.ui.tableWidget_histo_produitZ.setItem(0,  2,  tab_tirage_du_de)
+#            # Suite du remplissage tableau pour le benchmark
+#            tab_nbateliersY = QtGui.QTableWidgetItem('%s' %(str(nbAteliersY)))
+#            self.ui.tableWidget_histo_produitY.setItem(0,  1,  tab_nbateliersY)
+#            tab_nbateliersZ = QtGui.QTableWidgetItem('%s' %(str(nbAteliersZ)))
+#            self.ui.tableWidget_histo_produitZ.setItem(0,  1,  tab_nbateliersZ)
+#            
+#            if type_partie == "BEN":
+#                bonus = pms.BONUS
+#                montant_fixe = 0
+#            else:
+#                bonus = pms.BONUS
+#                montant_fixe = pms.MONTANT_FIXE
+#                
+#            if type_partie == "BEN":
+#                complement_rendementZ = 0
+#            elif type_partie == "WEA" or type_partie == "WEX":
+#                if tirage_du_de == 1:
+#                    epsylon = -1.
+#                elif tirage_du_de == 6:
+#                    epsylon = 1
+#                else:
+#                    epsylon = 0
+#                if decision_pour_Z == 0:
+#                    complement_rendementZ = 0
+#                else:
+#                    complement_rendementZ = float(epsylon * 100 * decision_pour_Z** pms.BETA)
+#            elif type_partie == "WIN" or type_partie == "WEI" or type_partie == "WIE":
+#                if tirage_du_de == 1:
+#                    epsylon = -1.
+#                elif tirage_du_de == 6:
+#                    epsylon = 1
+#                else:
+#                    epsylon = 0
+#                if epsylon == -1.:
+#                    if decision_pour_Z == 0:
+#                        complement_rendementZ = 0
+#                    else:
+#                        complement_rendementZ = float(epsylon * 100 * (decision_pour_Z** pms.BETA) - pms.ASSUR + pms.INDEMNITE)
+#                else:
+#                    if decision_pour_Z == 0:
+#                        complement_rendementZ = 0
+#                    else:
+#                        complement_rendementZ = float(epsylon * 100 * (decision_pour_Z** pms.BETA) - pms.ASSUR)            
+#            
+#            self.le_rendementY = round(20.0 * float(decision_pour_Y) ** .3, 2)
+#            tab_le_rendementY = QtGui.QTableWidgetItem('%s' %(str(self.le_rendementY)))
+#            self.ui.tableWidget_histo_produitY.setItem(0,  2,  tab_le_rendementY)
+#            self.le_profitY = round(10 * self.le_rendementY - decision_pour_Y, 2)
+#            tab_le_profitY = QtGui.QTableWidgetItem('%s' %(str(self.le_profitY)))
+#            self.ui.tableWidget_histo_produitY.setItem(0,  3,  tab_le_profitY)
+#            self.le_gainY = self.le_profitY * float(nbAteliersY)
+#            tab_le_gainY = QtGui.QTableWidgetItem('%s' %(str(self.le_gainY)))
+#            self.ui.tableWidget_histo_produitY.setItem(0,  4,  tab_le_gainY)
+#            
+#            self.le_rendementZ = round((20.0 * float(decision_pour_Z) ** .3), 2)
+#            tab_le_rendementZ = QtGui.QTableWidgetItem('%s' %(str(self.le_rendementZ)))
+#            self.ui.tableWidget_histo_produitZ.setItem(0,  3,  tab_le_rendementZ)
+#            self.le_profitZ = round(10 * self.le_rendementZ - decision_pour_Z, 2)
+#            tab_le_profitZ = QtGui.QTableWidgetItem('%s' %(str(self.le_profitZ)))
+#            self.ui.tableWidget_histo_produitZ.setItem(0,  4,  tab_le_profitZ)
+#            self.le_gainZ = self.le_profitZ * float(nbAteliersZ)
+#            tab_le_gainZ = QtGui.QTableWidgetItem('%s' %(str(self.le_gainZ)))
+#            self.ui.tableWidget_histo_produitZ.setItem(0,  5,  tab_le_gainZ)            
+#            self._timer_automatique = QtCore.QTimer()
+#            self._timer_automatique.timeout.connect(self._accept)
+#            self._timer_automatique.start(7000)
+#                
+#    def reject(self):
+#        pass
+#    
+#    def _accept(self):
+#        try:
+#            self._timer_automatique.stop()
+#        except AttributeError:
+#            pass
+#        retour = []
+#        retour.append(self.le_rendementY)
+#        retour.append(self.le_rendementZ)
+#        retour.append(self.le_profitY)
+#        retour.append(self.le_profitZ)
+#        retour.append(self.tirage_du_de)
+#        retour.append(self.le_gainY)
+#        retour.append(self.le_gainZ)
+#        if not self._automatique:
+#            confirmation = QtGui.QMessageBox.question(
+#                self, texts.HISTO_confirmation.titre,
+#                texts.HISTO_confirmation.message,
+#                QtGui.QMessageBox.No | QtGui.QMessageBox.Yes
+#            )
+#            if confirmation != QtGui.QMessageBox.Yes: 
+#                return
+#        self._defered.callback(retour)
+#        self.accept()
+        
+#----------------- SANS AFFICHAGE RESULTATS -----------------        
+
+class GuiAffichage_result():
     def __init__(self, defered, automatique, parent, periode, historique, decision_pour_Y, decision_pour_Z, tirage_du_de, type_partie, nbAteliersY, nbAteliersZ):
-        super(GuiAffichage_result, self).__init__(parent)
+#        super(GuiAffichage_result, self).__init__(parent)
 
         # variables
         self._defered = defered
         self._automatique = automatique
-        self._historique = GuiHistorique(self, historique)
+#        self._historique = GuiHistorique(self, historique)
         self.tirage_du_de = tirage_du_de
         
-        # gui
-        self.ui = affichageResultats.Ui_Dialog()
-        self.ui.setupUi(self)
+#        # gui
+#        self.ui = affichageResultats.Ui_Dialog()
+#        self.ui.setupUi(self)
 
         # period and history
-        if periode:
-            self.ui.label_periode.setText(textes_main.PERIODE_label(periode))
-            self.ui.pushButton_historique.setText(
-                le2mtrans(u"History"))
-            self.ui.pushButton_historique.clicked.connect(
-                self._historique.show)
-        else:
-            self.ui.label_periode.setVisible(False)
-            self.ui.pushButton_historique.setVisible(False)
+#        if periode:
+#            self.ui.label_periode.setText(textes_main.PERIODE_label(periode))
+#            self.ui.pushButton_historique.setText(
+#                le2mtrans(u"History"))
+#            self.ui.pushButton_historique.clicked.connect(
+#                self._historique.show)
+#        else:
+#            self.ui.label_periode.setVisible(False)
+#            self.ui.pushButton_historique.setVisible(False)
 
         # On cache le bouton historique
-        self.ui.pushButton_historique.setVisible(False)
+#        self.ui.pushButton_historique.setVisible(False)
         
         #On retaille la hauteur des ligne des tableaux historiques
-        for x in range(10):
-            self.ui.tableWidget_histo_produitY.setRowHeight(x, 19)
-            self.ui.tableWidget_histo_produitZ.setRowHeight(x, 19)
-        #On peut retailler la largeur des colonnes des tableaux historique
-        self.ui.tableWidget_histo_produitY.setColumnWidth(0, 40)
-        self.ui.tableWidget_histo_produitZ.setColumnWidth(0, 40)
-        self.ui.tableWidget_histo_produitZ.setColumnWidth(2, 25)
+#        for x in range(10):
+#            self.ui.tableWidget_histo_produitY.setRowHeight(x, 19)
+#            self.ui.tableWidget_histo_produitZ.setRowHeight(x, 19)
+#        #On peut retailler la largeur des colonnes des tableaux historique
+#        self.ui.tableWidget_histo_produitY.setColumnWidth(0, 40)
+#        self.ui.tableWidget_histo_produitZ.setColumnWidth(0, 40)
+#        self.ui.tableWidget_histo_produitZ.setColumnWidth(2, 25)
         
         # bouton box
-        self.ui.buttonBox.accepted.connect(self._accept)
-        self.ui.buttonBox.rejected.connect(self.reject)
-        self.ui.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setVisible(
-            False)
+#        self.ui.buttonBox.accepted.connect(self._accept)
+#        self.ui.buttonBox.rejected.connect(self.reject)
+#        self.ui.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setVisible(
+#            False)
 
         # title and size
-        self.setWindowTitle(texts.DECISION_titre)
+#        self.setWindowTitle(texts.DECISION_titre)
 #        self.setFixedSize(1032, 768)
 
         # On rempli les lignes Y et Z du tableau resultat
-        tab_decision_pour_Y = QtGui.QTableWidgetItem('%s' %(str(decision_pour_Y)))
-        tab_decision_pour_Z = QtGui.QTableWidgetItem('%s' %(str(decision_pour_Z)))
-        tab_tirage_du_de = QtGui.QTableWidgetItem('%s' %(str(self.tirage_du_de)))
-        self.ui.tableWidget_histo_produitY.setItem(0,  0,  tab_decision_pour_Y)
-        self.ui.tableWidget_histo_produitZ.setItem(0,  0,  tab_decision_pour_Z)
-        self.ui.tableWidget_histo_produitZ.setItem(0,  2,  tab_tirage_du_de)
+#        tab_decision_pour_Y = QtGui.QTableWidgetItem('%s' %(str(decision_pour_Y)))
+#        tab_decision_pour_Z = QtGui.QTableWidgetItem('%s' %(str(decision_pour_Z)))
+#        tab_tirage_du_de = QtGui.QTableWidgetItem('%s' %(str(self.tirage_du_de)))
+#        self.ui.tableWidget_histo_produitY.setItem(0,  0,  tab_decision_pour_Y)
+#        self.ui.tableWidget_histo_produitZ.setItem(0,  0,  tab_decision_pour_Z)
+#        self.ui.tableWidget_histo_produitZ.setItem(0,  2,  tab_tirage_du_de)
         # Suite du remplissage tableau pour le benchmark
-        tab_nbateliersY = QtGui.QTableWidgetItem('%s' %(str(nbAteliersY)))
-        self.ui.tableWidget_histo_produitY.setItem(0,  1,  tab_nbateliersY)
-        tab_nbateliersZ = QtGui.QTableWidgetItem('%s' %(str(nbAteliersZ)))
-        self.ui.tableWidget_histo_produitZ.setItem(0,  1,  tab_nbateliersZ)
+#        tab_nbateliersY = QtGui.QTableWidgetItem('%s' %(str(nbAteliersY)))
+#        self.ui.tableWidget_histo_produitY.setItem(0,  1,  tab_nbateliersY)
+#        tab_nbateliersZ = QtGui.QTableWidgetItem('%s' %(str(nbAteliersZ)))
+#        self.ui.tableWidget_histo_produitZ.setItem(0,  1,  tab_nbateliersZ)
 
         if type_partie == "BEN":
             bonus = pms.BONUS
@@ -918,39 +1144,39 @@ class GuiAffichage_result(QtGui.QDialog):
                     complement_rendementZ = float(epsylon * 100 * (decision_pour_Z** pms.BETA) - pms.ASSUR)
 
         self.le_rendementY = round(20.0 * float(decision_pour_Y) ** .3, 2)
-        tab_le_rendementY = QtGui.QTableWidgetItem('%s' %(str(self.le_rendementY)))
-        self.ui.tableWidget_histo_produitY.setItem(0,  2,  tab_le_rendementY)
+#        tab_le_rendementY = QtGui.QTableWidgetItem('%s' %(str(self.le_rendementY)))
+#        self.ui.tableWidget_histo_produitY.setItem(0,  2,  tab_le_rendementY)
         self.le_profitY = round((pms.PRIX_PRODUIT_Y * self.le_rendementY) - (decision_pour_Y * pms.PRIX_PRODUIT_X) + bonus + montant_fixe, 2)
-        tab_le_profitY = QtGui.QTableWidgetItem('%s' %(str(self.le_profitY)))
-        self.ui.tableWidget_histo_produitY.setItem(0,  3,  tab_le_profitY)
+#        tab_le_profitY = QtGui.QTableWidgetItem('%s' %(str(self.le_profitY)))
+#        self.ui.tableWidget_histo_produitY.setItem(0,  3,  tab_le_profitY)
         self.le_gainY = self.le_profitY * float(nbAteliersY)
-        tab_le_gainY = QtGui.QTableWidgetItem('%s' %(str(self.le_gainY)))
-        self.ui.tableWidget_histo_produitY.setItem(0,  4,  tab_le_gainY)
-        
+#        tab_le_gainY = QtGui.QTableWidgetItem('%s' %(str(self.le_gainY)))
+#        self.ui.tableWidget_histo_produitY.setItem(0,  4,  tab_le_gainY)
+#        
         self.le_rendementZ = round((20.0 * float(decision_pour_Z) ** .3 + complement_rendementZ), 2)
-        tab_le_rendementZ = QtGui.QTableWidgetItem('%s' %(str(self.le_rendementZ)))
-        self.ui.tableWidget_histo_produitZ.setItem(0,  3,  tab_le_rendementZ)
+#        tab_le_rendementZ = QtGui.QTableWidgetItem('%s' %(str(self.le_rendementZ)))
+#        self.ui.tableWidget_histo_produitZ.setItem(0,  3,  tab_le_rendementZ)
         self.le_profitZ = round((pms.PRIX_PRODUIT_Z * self.le_rendementZ) - (decision_pour_Z * pms.PRIX_PRODUIT_X) + bonus + montant_fixe, 2)
-        tab_le_profitZ = QtGui.QTableWidgetItem('%s' %(str(self.le_profitZ)))
-        self.ui.tableWidget_histo_produitZ.setItem(0,  4,  tab_le_profitZ)
+#        tab_le_profitZ = QtGui.QTableWidgetItem('%s' %(str(self.le_profitZ)))
+#        self.ui.tableWidget_histo_produitZ.setItem(0,  4,  tab_le_profitZ)
         self.le_gainZ = self.le_profitZ * float(nbAteliersZ)
-        tab_le_gainZ = QtGui.QTableWidgetItem('%s' %(str(self.le_gainZ)))
-        self.ui.tableWidget_histo_produitZ.setItem(0,  5,  tab_le_gainZ)        
+#        tab_le_gainZ = QtGui.QTableWidgetItem('%s' %(str(self.le_gainZ)))
+#        self.ui.tableWidget_histo_produitZ.setItem(0,  5,  tab_le_gainZ)        
         
         # automatic
         if self._automatique:
-            # On rempli les lignes Y et Z du tableau resultat
-            tab_decision_pour_Y = QtGui.QTableWidgetItem('%s' %(str(decision_pour_Y)))
-            tab_decision_pour_Z = QtGui.QTableWidgetItem('%s' %(str(decision_pour_Z)))
-            tab_tirage_du_de = QtGui.QTableWidgetItem('%s' %(str(self.tirage_du_de)))
-            self.ui.tableWidget_histo_produitY.setItem(0,  0,  tab_decision_pour_Y)
-            self.ui.tableWidget_histo_produitZ.setItem(0,  0,  tab_decision_pour_Z)
-            self.ui.tableWidget_histo_produitZ.setItem(0,  2,  tab_tirage_du_de)
-            # Suite du remplissage tableau pour le benchmark
-            tab_nbateliersY = QtGui.QTableWidgetItem('%s' %(str(nbAteliersY)))
-            self.ui.tableWidget_histo_produitY.setItem(0,  1,  tab_nbateliersY)
-            tab_nbateliersZ = QtGui.QTableWidgetItem('%s' %(str(nbAteliersZ)))
-            self.ui.tableWidget_histo_produitZ.setItem(0,  1,  tab_nbateliersZ)
+#            # On rempli les lignes Y et Z du tableau resultat
+#            tab_decision_pour_Y = QtGui.QTableWidgetItem('%s' %(str(decision_pour_Y)))
+#            tab_decision_pour_Z = QtGui.QTableWidgetItem('%s' %(str(decision_pour_Z)))
+#            tab_tirage_du_de = QtGui.QTableWidgetItem('%s' %(str(self.tirage_du_de)))
+#            self.ui.tableWidget_histo_produitY.setItem(0,  0,  tab_decision_pour_Y)
+#            self.ui.tableWidget_histo_produitZ.setItem(0,  0,  tab_decision_pour_Z)
+#            self.ui.tableWidget_histo_produitZ.setItem(0,  2,  tab_tirage_du_de)
+#            # Suite du remplissage tableau pour le benchmark
+#            tab_nbateliersY = QtGui.QTableWidgetItem('%s' %(str(nbAteliersY)))
+#            self.ui.tableWidget_histo_produitY.setItem(0,  1,  tab_nbateliersY)
+#            tab_nbateliersZ = QtGui.QTableWidgetItem('%s' %(str(nbAteliersZ)))
+#            self.ui.tableWidget_histo_produitZ.setItem(0,  1,  tab_nbateliersZ)
             
             if type_partie == "BEN":
                 bonus = pms.BONUS
@@ -991,36 +1217,36 @@ class GuiAffichage_result(QtGui.QDialog):
                         complement_rendementZ = float(epsylon * 100 * (decision_pour_Z** pms.BETA) - pms.ASSUR)            
             
             self.le_rendementY = round(20.0 * float(decision_pour_Y) ** .3, 2)
-            tab_le_rendementY = QtGui.QTableWidgetItem('%s' %(str(self.le_rendementY)))
-            self.ui.tableWidget_histo_produitY.setItem(0,  2,  tab_le_rendementY)
+#            tab_le_rendementY = QtGui.QTableWidgetItem('%s' %(str(self.le_rendementY)))
+#            self.ui.tableWidget_histo_produitY.setItem(0,  2,  tab_le_rendementY)
             self.le_profitY = round(10 * self.le_rendementY - decision_pour_Y, 2)
-            tab_le_profitY = QtGui.QTableWidgetItem('%s' %(str(self.le_profitY)))
-            self.ui.tableWidget_histo_produitY.setItem(0,  3,  tab_le_profitY)
+#            tab_le_profitY = QtGui.QTableWidgetItem('%s' %(str(self.le_profitY)))
+#            self.ui.tableWidget_histo_produitY.setItem(0,  3,  tab_le_profitY)
             self.le_gainY = self.le_profitY * float(nbAteliersY)
-            tab_le_gainY = QtGui.QTableWidgetItem('%s' %(str(self.le_gainY)))
-            self.ui.tableWidget_histo_produitY.setItem(0,  4,  tab_le_gainY)
-            
+#            tab_le_gainY = QtGui.QTableWidgetItem('%s' %(str(self.le_gainY)))
+#            self.ui.tableWidget_histo_produitY.setItem(0,  4,  tab_le_gainY)
+#            
             self.le_rendementZ = round((20.0 * float(decision_pour_Z) ** .3), 2)
-            tab_le_rendementZ = QtGui.QTableWidgetItem('%s' %(str(self.le_rendementZ)))
-            self.ui.tableWidget_histo_produitZ.setItem(0,  3,  tab_le_rendementZ)
+#            tab_le_rendementZ = QtGui.QTableWidgetItem('%s' %(str(self.le_rendementZ)))
+#            self.ui.tableWidget_histo_produitZ.setItem(0,  3,  tab_le_rendementZ)
             self.le_profitZ = round(10 * self.le_rendementZ - decision_pour_Z, 2)
-            tab_le_profitZ = QtGui.QTableWidgetItem('%s' %(str(self.le_profitZ)))
-            self.ui.tableWidget_histo_produitZ.setItem(0,  4,  tab_le_profitZ)
+#            tab_le_profitZ = QtGui.QTableWidgetItem('%s' %(str(self.le_profitZ)))
+#            self.ui.tableWidget_histo_produitZ.setItem(0,  4,  tab_le_profitZ)
             self.le_gainZ = self.le_profitZ * float(nbAteliersZ)
-            tab_le_gainZ = QtGui.QTableWidgetItem('%s' %(str(self.le_gainZ)))
-            self.ui.tableWidget_histo_produitZ.setItem(0,  5,  tab_le_gainZ)            
-            self._timer_automatique = QtCore.QTimer()
-            self._timer_automatique.timeout.connect(self._accept)
-            self._timer_automatique.start(7000)
+#            tab_le_gainZ = QtGui.QTableWidgetItem('%s' %(str(self.le_gainZ)))
+#            self.ui.tableWidget_histo_produitZ.setItem(0,  5,  tab_le_gainZ)            
+#            self._timer_automatique = QtCore.QTimer()
+#            self._timer_automatique.timeout.connect(self._accept)
+#            self._timer_automatique.start(7000)
                 
-    def reject(self):
-        pass
+#    def reject(self):
+#        pass
     
-    def _accept(self):
-        try:
-            self._timer_automatique.stop()
-        except AttributeError:
-            pass
+#    def _accept(self):
+#        try:
+#            self._timer_automatique.stop()
+#        except AttributeError:
+#            pass
         retour = []
         retour.append(self.le_rendementY)
         retour.append(self.le_rendementZ)
@@ -1029,14 +1255,13 @@ class GuiAffichage_result(QtGui.QDialog):
         retour.append(self.tirage_du_de)
         retour.append(self.le_gainY)
         retour.append(self.le_gainZ)
-        if not self._automatique:
-            confirmation = QtGui.QMessageBox.question(
-                self, texts.HISTO_confirmation.titre,
-                texts.HISTO_confirmation.message,
-                QtGui.QMessageBox.No | QtGui.QMessageBox.Yes
-            )
-            if confirmation != QtGui.QMessageBox.Yes: 
-                return
+#        if not self._automatique:
+#            confirmation = QtGui.QMessageBox.question(
+#                self, texts.HISTO_confirmation.titre,
+#                texts.HISTO_confirmation.message,
+#                QtGui.QMessageBox.No | QtGui.QMessageBox.Yes
+#            )
+#            if confirmation != QtGui.QMessageBox.Yes: 
+#                return
         self._defered.callback(retour)
-        self.accept()
-        
+#        self.accept()

@@ -215,7 +215,7 @@ class RemotePT(pb.Referenceable):
             ecran_affichage_result = GuiAffichage_result(
                 defered, self._le2mclt.automatique,
                 self._le2mclt.screen, self._currentperiod, self._histo, decision_pour_Y, decision_pour_Z, tirage_du_de, type_partie, nbAteliersY, nbAteliersZ)
-            ecran_affichage_result.show()
+#            ecran_affichage_result.show()
             return defered             
 
     def remote_display_summary(self, texte_recap, historique):
