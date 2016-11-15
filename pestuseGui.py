@@ -820,6 +820,9 @@ class GuiTirage_de(QtGui.QDialog):
     def get_dicevalue(self):
         return self._widdice.get_dicevalue()
         
+    def reject(self):
+        pass        
+        
 #----------------- AVEC AFFICHAGE RESULTATS -----------------        
 
 #class GuiAffichage_result(QtGui.QDialog):
